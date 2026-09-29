@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Catálogo Seridóplast</title>
+<!-- Fontes do sistema utilizadas para permitir abertura offline -->
+<script src="js/vendor/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="navbar">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo-badge"><img src="assets/images/embedded/logo-seridoplast.png" alt="Seridóplast"></div>
+      <div class="brand-name">Catálogo<br>Seridóplast</div>
+    </div>
+    <div class="navsearch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#171A1F" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search" type="search" placeholder="Buscar produto, código ou fornecedor…" autocomplete="off">
+    </div>
+    <button class="cart-toggle" id="cartBtn" aria-label="Abrir solicitação">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span class="badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</div>
+
+<div class="chiprow">
+  <div class="wrap" style="display:flex; align-items:center; gap:8px;">
+    <button class="chip" id="sidebarToggle">☰ Segmentos e fornecedores</button>
+  </div>
+</div>
+
+<div id="sidebarOverlay"></div>
+
+<div class="wrap">
+  <div class="hero-section">
+    <div class="hero-band hero-25">
+      <div class="h25-copy">
+        <img class="h25-logo" src="assets/images/embedded/embedded-002.png" alt="Seridóplast 25 anos">
+        <div class="h25-title">Catálogo de Produtos</div>
+        <div class="h25-sub">Confeitaria, embalagens, bombonieri e muito mais — faça seu pedido direto pelo catálogo.</div>
+      </div>
+      <img class="h25-girl" src="assets/images/embedded/embedded-003.jpg" alt="Garota propaganda Seridóplast">
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="num">6085</div><div class="lbl">produtos</div></div>
+      <div class="stat-card"><div class="num">208</div><div class="lbl">fornecedores</div></div>
+      <div class="stat-card"><div class="num">14</div><div class="lbl">segmentos</div></div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-title"><span>Segmentos</span><span class="clear-s" id="clearSidebar">limpar filtros</span></div>
+      <div id="sidebarList" class="segment-nav"></div>
+    </aside>
+
+    <div class="content">
+      <div class="section" id="landingSection">
+        <div class="section-head"><h2>Segmentos</h2></div>
+        <div class="supplier-grid" id="segmentGrid"></div>
+      </div>
+
+      <div class="section" id="resultsSection" style="display:none;">
+        <div class="filterbar" id="filterBar"></div>
+        <div class="grid" id="grid"></div>
+        <div id="groupedView"></div>
+        <div class="empty" id="empty" style="display:none;">
+          <div class="display">Nenhum produto encontrado</div>
+          <div>Tente outro termo, ou confira o código digitado.</div>
+        </div>
+        <div class="pager" id="pager" style="display:none;">
+          <button id="prevBtn">← Anterior</button>
+          <span id="pageInfo"></span>
+          <button id="nextBtn">Próxima →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>Seridóplast</strong> — catálogo comercial para consulta e preparação de solicitações.<br>
+  Este ambiente não realiza venda, checkout ou envio automático de mensagens.
+</footer>
+
+<div id="mobileBar">
+  <span class="mb-txt" id="mobileBarTxt">0 itens no pedido</span>
+  <button id="mobileBarBtn">Ver pedido</button>
+</div>
+
+<div id="imgLightbox">
+  <button id="lightboxClose">×</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<div id="cartOverlay">
+  <div id="cartDrawer">
+    <button id="closeCartBtn">×</button>
+    <h2>Seu pedido</h2>
+    <div id="cartList"></div>
+    <div class="cart-total" id="cartTotal"></div>
+    <div class="request-config">
+      <label for="rcaSelect">RCA responsável pela solicitação</label>
+      <div class="rca-control">
+        <select id="rcaSelect" aria-label="Selecionar RCA"></select>
+        <button id="manageRcasBtn" type="button">Cadastrar RCA</button>
+      </div>
+      <div class="validation-msg" id="requestValidation"></div>
+      <div class="privacy-note">Os dados ficam salvos somente neste navegador. Nada é enviado automaticamente.</div>
+    </div>
+    <div class="cart-actions">
+      <button id="prepareBtn">Preparar solicitação</button>
+      <button id="pdfBtn">Baixar PDF</button>
+    </div>
+    <div class="cart-actions">
+      <button id="clearBtn">Limpar pedido</button>
+    </div>
+  </div>
+</div>
+
+<div id="priceOverlay" class="dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="priceTitle">
+  <div class="dialog-card" style="max-width:430px">
+    <h2 id="priceTitle">Preço do produto</h2>
+    <p class="dialog-sub">Informe o preço unitário ou deixe em branco para continuar sem valor.</p>
+    <div class="price-product">
+      <strong id="priceProductName"></strong>
+      <small id="priceProductMeta"></small>
+    </div>
+    <form id="priceForm">
+      <div class="price-field">
+        <label for="priceInput">Preço unitário (opcional)</label>
+        <div class="price-input-wrap"><span class="price-prefix">R$</span><input id="priceInput" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
+        <div class="price-help">Você poderá editar ou remover o preço no carrinho antes de gerar o PDF.</div>
+        <div class="validation-msg" id="priceValidation"></div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" id="cancelPriceBtn">Cancelar</button>
+        <button class="primary" type="submit" id="confirmPriceBtn">Adicionar ao pedido</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="rcaOverlay" class="dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="rcaTitle">
+  <div class="dialog-card">
+    <h2 id="rcaTitle">Cadastro de RCA</h2>
+    <p class="dialog-sub">Cadastre os contatos que poderão ser selecionados na preparação da solicitação.</p>
+    <form id="rcaForm" class="rca-form">
+      <input id="rcaName" required maxlength="80" placeholder="Nome do RCA">
+      <input id="rcaEmail" type="email" maxlength="120" placeholder="E-mail (opcional)">
+      <input id="rcaPhone" inputmode="tel" maxlength="30" placeholder="WhatsApp (opcional)">
+      <div class="dialog-actions" style="grid-column:1/-1">
+        <button type="button" id="closeRcaBtn">Fechar</button>
+        <button class="primary" type="submit">Salvar RCA</button>
+      </div>
+    </form>
+    <div id="rcaList" class="rca-list"></div>
+  </div>
+</div>
+
+<div id="requestOverlay" class="dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="requestTitle">
+  <div class="dialog-card">
+    <h2 id="requestTitle">Solicitação pronta para revisão</h2>
+    <p class="dialog-sub">Nenhum pedido ou e-mail foi enviado. Revise e copie o rascunho quando estiver de acordo.</p>
+    <div id="requestPreview"></div>
+    <div class="dialog-actions">
+      <button type="button" id="closeRequestBtn">Voltar</button>
+      <button type="button" class="primary" id="copyBtn">Copiar rascunho</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
